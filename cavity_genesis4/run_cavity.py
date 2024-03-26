@@ -73,7 +73,7 @@ if nEbeam_flat_init > 0 and nEbeam_flat > 0:
 else:
     Nshot_total = nEbeam_chirp + 1
 
-Nstart = 0
+Nstart = 1
 Nend = 2
 ##################################################################
 
@@ -136,7 +136,7 @@ for k in range(Nstart, Nend):
                  xlamdu = 0.026, nwig = 130, fodo_length = 3.9*2, Kstart = Kstart, taper = taper,                                     # Define lattice
                  ustart = ustart, ustop = ustop, order = order, quad_length =  0.084, quad_grad = quad_grad,                            # Define lattice
                  phaseShifts = None, phaseshift_length = 0.0, linename = 'myline',                                    # Define lattice
-                 seedfile = seed_filename, P0 = P0,                                                                            # Define Seed
+                 seedfile = save_dir + '/' + seed_filename, P0 = P0,                                                                            # Define Seed
                  save_dir = save_dir, 
                  nametag = nametag)
 

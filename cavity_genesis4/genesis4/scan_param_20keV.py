@@ -166,6 +166,7 @@ quad_grad = 1.784478917
 
 
 #############################################################################
+
 Glist = []
 G = scan_params(xlamds = xlamds, sample = sample,dgrid=dgrid, ngrid = ngrid, seed = np.random.randint(100000),          # Basics
                 pulselen = pulselen, sigma = sigma, peak_current = peak_current, beamprofile = beamprofile, gam0 = gam0,                   # Define e-beam
