@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import os 
-
+from recirculation.rfp import fwhm, mwhm
 # change default plotting font size
 import matplotlib
 font = {'family' : 'normal', 'size' : 14} # reasonable for on-screen displays

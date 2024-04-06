@@ -16,7 +16,7 @@ def submit_mergeFiles(shell_script = 'RunMergeFiles.sh'):
 
 
 
-def start_mergeFiles(nRoundtrips, workdir, saveFilenamePrefix, dgrid, dt, Dpadt):
+def start_mergeFiles(nRoundtrips, workdir, saveFilenamePrefix, dgrid, dt, Dpadt, xlamds):
     
     param_dic = locals()
     pickle.dump(param_dic, open( workdir + "/merge_params.p", "wb" ) )

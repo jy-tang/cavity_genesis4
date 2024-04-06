@@ -9,7 +9,7 @@ import os
 from genesis4.lume_genesis_JT.writers import write_dfl_genesis4_h5
 from constants import *
 
-def merge_files(nRoundtrips, workdir, saveFilenamePrefix, dgrid, dt, Dpadt):
+def merge_files(nRoundtrips, workdir, saveFilenamePrefix, dgrid, dt, Dpadt, xlamds):
     
     t0 = time.time()
     
@@ -59,6 +59,14 @@ def merge_files(nRoundtrips, workdir, saveFilenamePrefix, dgrid, dt, Dpadt):
                     myfile.write(" ".join(str(item) for item in return_field_info))
                     myfile.write("\n")
               
+                #write to disk
+                if Round == 0:
+                    writefilename =workdir + '/'+ saveFilenamePrefix+"_field_recirc_round" + str(Round) + '.fld.h5'
+                    #write_dfl(field_t, writefilename,conjugate_field_for_genesis = False,swapxyQ=False)
+                    param = {'gridpoints': field_t.shape[1], 'gridsize': dgrid*2/field_t.shape[1], 'refposition': 0.0, 'wavelength': xlamds, 
+                              'slicecount': field_t.shape[0], 'slicespacing': dt*CSPEED}
+                    write_dfl_genesis4_h5(fld = field_t, param = param, filename =  writefilename, indexing = 'Genesis2')
+
                 
                 #--------------------for transmission files ------------------------------
                 
@@ -86,7 +94,7 @@ def merge_files(nRoundtrips, workdir, saveFilenamePrefix, dgrid, dt, Dpadt):
                 if Round == 0:
                     writefilename =workdir + '/'+ saveFilenamePrefix+"_field_transmit_round" + str(Round) + '.fld.h5'
                     #write_dfl(field_t, writefilename,conjugate_field_for_genesis = False,swapxyQ=False)
-                    param = {'gridpoints': field_t.shape[1], 'gridsize': dgrid*2/field_t.shape[1], 'refposition': 0.0, 
+                    param = {'gridpoints': field_t.shape[1], 'gridsize': dgrid*2/field_t.shape[1], 'refposition': 0.0, 'wavelength': xlamds, 
                               'slicecount': field_t.shape[0], 'slicespacing': dt*CSPEED}
                     write_dfl_genesis4_h5(fld = field_t, param = param, filename =  writefilename, indexing = 'Genesis2')
                 

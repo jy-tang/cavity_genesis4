@@ -273,7 +273,7 @@ def recirculate_to_undulator_mpi(zsep, ncar, dgrid, nslice, xlamds=1.261043e-10,
             with h5py.File(fld_filename, 'r') as h5:
                 fld, param = load_genesis4_fields(h5)
             ######################### Switch axis to [t, x, y] #################################################################
-            fld = np.moveaxis(fld, -1, 0)    #
+            fld = np.ascontiguousarray(np.moveaxis(fld, -1, 0))    #
             
             print('took',time.time()-t0,'seconds total to read in and format the field with dimensions',fld.shape)
             fld = fld[:nslice,:,:]
@@ -485,7 +485,7 @@ def recirculate_to_undulator_mpi(zsep, ncar, dgrid, nslice, xlamds=1.261043e-10,
             print('Writing seed file to',seedfilename)
                 #writefilename = readfilename + 'r'
             #write_dfl(fld, seedfilename,conjugate_field_for_genesis = False,swapxyQ=False)
-            param['slicecount'] = fld.shape[2]
+            param['slicecount'] = fld.shape[0]
             write_dfl_genesis4_h5(fld = fld, param = param, filename = workdir +'/'+seedfilename, indexing = 'Genesis2')
 
         print('It takes ' + str(time.time() - t00) + ' seconds to finish the recirculation.') 

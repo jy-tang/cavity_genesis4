@@ -9,7 +9,7 @@
 #SBATCH --mem-per-cpu=4g
 #SBATCH --time=00:30:00
 ##SBATCH --exclude=sdfmilan[108]
-#SBATCH --nodes=2
+##SBATCH --nodes=2
 #--exclusive
 
 

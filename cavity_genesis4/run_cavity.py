@@ -12,7 +12,7 @@ import gc
 import h5py
 #############################################################
 root_dir = "/sdf/data/ad/ard/u/jytang/cavity_genesis4_20keV/"
-folder_name = 'test1'
+folder_name = 'data_qgrad0_8_5kA'
 save_dir = root_dir + '/' + folder_name
 if not os.path.exists(save_dir):
     os.mkdir(save_dir)
@@ -20,21 +20,22 @@ if not os.path.exists(save_dir):
 #Genesis
 
 xlamds = 6.30524765e-11
-sample = zsep = 100
+sample = zsep = 200
 dt = xlamds*sample/CSPEED
 
 
 #field
-dgrid=100e-6
+dgrid= 361e-6
 ncar = 181
-P0 = 0
+P0 = 0.0
 
 #beam
-pulselen = 20e-15
+pulselen = 400e-15
+peak_current = 250
 nslice = int(pulselen/dt)
 print('number of slices =  ', nslice )
 
-peak_current = 2e3
+
 beamprofile = 'F'
 sigma = None
 gam0 = np.around(8000./0.511,3)
@@ -46,11 +47,11 @@ emitny = 0.3e-6
 
 #undualtor
 Kstart = 0.4335
-taper = 0
-ustart = 2
-ustop = 10
+taper = 0.01
+ustart = 4
+ustop = 32
 order = 2
-quad_grad = 1.784478917
+quad_grad = 0.5
 
 ##################################################################
 #Recirculation
@@ -60,7 +61,7 @@ nEbeam_flat = 5
 nEbeam_chirp = 2
 
 isradi = 1
-npadt = (8192 - nslice//isradi)//2
+npadt = (16384 - nslice//isradi)//2
 assert npadt >= 0, 'Error: npadt < 0 !'
 
 npad1 = (512-ncar)//2
@@ -73,8 +74,8 @@ if nEbeam_flat_init > 0 and nEbeam_flat > 0:
 else:
     Nshot_total = nEbeam_chirp + 1
 
-Nstart = 1
-Nend = 2
+Nstart = 23
+Nend = 30
 ##################################################################
 
 
@@ -93,7 +94,7 @@ for k in range(Nstart, Nend):
         seed_filename = None
     else:        # others start from recirculated seed
         dfl_filename = nametag+'_seed_init.fld.h5'  # the seed file without cutting from the last electron shots
-        seed_filename =  nametag+'_seed.fld.h5'
+        seed_filename = save_dir + '/' +  nametag+'_seed.fld.h5'
 
         # read seed file
         print('start to cut seed file')
@@ -116,7 +117,7 @@ for k in range(Nstart, Nend):
         param['slicecount'] = fld.shape[2]
         print('fld shape after cutting', fld.shape)
         #write_dfl(fld, filename = root_dir+'/' + folder_name + '/'+seed_filename)
-        write_dfl_genesis4_h5(fld = fld, param = param, filename = save_dir + '/' + seed_filename, indexing = 'Genesis4')
+        write_dfl_genesis4_h5(fld = fld, param = param, filename =  seed_filename, indexing = 'Genesis4')
 
         del fld
 
@@ -136,7 +137,7 @@ for k in range(Nstart, Nend):
                  xlamdu = 0.026, nwig = 130, fodo_length = 3.9*2, Kstart = Kstart, taper = taper,                                     # Define lattice
                  ustart = ustart, ustop = ustop, order = order, quad_length =  0.084, quad_grad = quad_grad,                            # Define lattice
                  phaseShifts = None, phaseshift_length = 0.0, linename = 'myline',                                    # Define lattice
-                 seedfile = save_dir + '/' + seed_filename, P0 = P0,                                                                            # Define Seed
+                 seedfile = seed_filename, P0 = P0,                                                                            # Define Seed
                  save_dir = save_dir, 
                  nametag = nametag)
 
@@ -156,7 +157,7 @@ for k in range(Nstart, Nend):
 
     # merge files for each roundtrip on nRoundtrips workers, with larger memory
     t0 = time.time()
-    jobid = start_mergeFiles(nRoundtrips =nRoundtrips, workdir = save_dir + '/', saveFilenamePrefix=nametag, dgrid = dgrid, dt = dt, Dpadt = 0)
+    jobid = start_mergeFiles(nRoundtrips =nRoundtrips, workdir = save_dir + '/', saveFilenamePrefix=nametag, dgrid = dgrid, dt = dt, Dpadt = 0, xlamds = xlamds)
     print('It takes ', time.time() - t0, ' seconds to finish merging files.')
     gc.collect()
     

@@ -1,3 +1,5 @@
+## Author: J. Tang
+## Date: 3/25/2024
 import numpy as np
 
 def taper(n_und, Kstart, dKbyK, order = 2):
@@ -10,9 +12,8 @@ def taper(n_und, Kstart, dKbyK, order = 2):
     if order == 1:
         Ktaper = np.linspace(Kstart, Kend, n_und + 1)
     elif order == 2:
-        alpha = (Kend - Kstart)/n_und*2
+        alpha = (Kend - Kstart)/n_und**2
         Ktaper = Kstart + alpha*np.arange(n_und + 1)**2
-       
     for i in range(n_und):
         Klist.append([Ktaper[i], Ktaper[i + 1]])
 
@@ -93,16 +94,17 @@ def make_lattice(undKs, und_period, und_nperiods,  fodo_length,
     if apply_taper:
         assert ustart <= ustop, f"Error: ustop is smaller than ustart!" 
         if ustart < len(undKs):
+            
             #remove existing ones
             while len(undKs) > ustart:
-                undKs.pop()
+                Kpar = undKs.pop()
 
             # get the Kstart
-            Kpar = undKs[-1]
+            #Kpar = undKs[-1]
             if len(np.shape(Kpar)) == 0:
                 Kstart =  Kpar
             else:
-                Kstart =  Kpar[1]
+                Kstart =  Kpar[0]
             #calculate tapered undKs 
             Klist = taper(n_und = ustop - ustart, Kstart = Kstart, dKbyK = dKbyK, order = 2)
             undKs.extend(Klist)
